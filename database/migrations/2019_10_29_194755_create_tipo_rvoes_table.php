@@ -16,9 +16,6 @@ class CreateTipoRvoesTable extends Migration
         Schema::create('tipo_rvoes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre');
-            $table->string('indice_superior')->nullable();
-            $table->string('indice_inferior')->nullable();
-            $table->string('catalogo_id')->nullable();
             $table->timestamps();
         });
     }

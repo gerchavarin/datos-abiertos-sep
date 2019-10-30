@@ -21,11 +21,11 @@ class CreatePlantelsTable extends Migration
             $table->string('pagina_web')->nullable();
             $table->unsignedInteger('institucion_id');
             $table->foreign('institucion_id')->references('id')->on('institucions');
-            $table->unsignedInteger('direccion_id');
+            $table->unsignedInteger('direccion_id')->nullable();
             $table->foreign('direccion_id')->references('id')->on('direccions');
-            $table->unsignedInteger('director_id')->nullable();;
+            $table->unsignedInteger('director_id')->nullable();
             $table->foreign('director_id')->references('id')->on('directors');
-            $table->unsignedInteger('telefono_id');
+            $table->unsignedInteger('telefono_id')->nullable();
             $table->foreign('telefono_id')->references('id')->on('telefonos');
             $table->timestamps();
         });

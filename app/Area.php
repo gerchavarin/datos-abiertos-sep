@@ -9,8 +9,5 @@ class Area extends Model
     protected $fillable = [
         'nombre',
         'descripcion',
-        'indice_superior',
-        'indice_inferior',
-        'catalogo_id',
     ];
 }

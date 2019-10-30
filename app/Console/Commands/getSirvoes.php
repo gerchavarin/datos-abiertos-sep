@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Console\Commands;
 
 use App\Area;
 use App\Direccion;
@@ -18,69 +18,46 @@ use App\Programa;
 use App\Telefono;
 use App\TipoRvoe;
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
+use Illuminate\Console\Command;
 
-class CatalogoController extends Controller
+class getSirvoes extends Command
 {
     /**
-     * Display a listing of the resource.
+     * The name and signature of the console command.
      *
-     * @return \Illuminate\Http\Response
+     * @var string
      */
-    public function index()
+    protected $signature = 'get:sirvoes';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Obtiene los datos de programas de estudios de la base de datos de SIRVOES';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        //
+        parent::__construct();
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Execute the console command.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
-    public function store(Request $request)
+    public function handle()
     {
-        //
-    }
+        $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    public function getSirvoes() {
         $client = new \GuzzleHttp\Client();
 
-        /*$consultaTotalesUrl = "https://www.sirvoes.sep.gob.mx/sirvoes/mvc/consultas/consultaTotales";
+        $consultaTotalesUrl = "https://www.sirvoes.sep.gob.mx/sirvoes/mvc/consultas/consultaTotales";
 
         $consultaTotalesResponse = $client->post($consultaTotalesUrl, [
             'json' => [
@@ -88,19 +65,21 @@ class CatalogoController extends Controller
             ]
         ]);
 
-        $consultaTotales = json_decode($consultaTotalesResponse->getBody()->getContents());*/
+        $consultaTotales = json_decode($consultaTotalesResponse->getBody()->getContents());
 
         $consultaGeneralUrl = "https://www.sirvoes.sep.gob.mx/sirvoes/mvc/consultas/consultaGeneral";
 
         $consultaGeneralResponse = $client->post($consultaGeneralUrl, [
             'json' => [
-                'indiceSuperior' => 5 // $consultaTotales->indiceInferior
+                'indiceSuperior' => $consultaTotales->indiceInferior
             ]
         ]);
 
         $consultaGeneral = json_decode($consultaGeneralResponse->getBody()->getContents());
 
-        foreach ($consultaGeneral as $plantel) {
+        foreach ($consultaGeneral as $index => $plantel) {
+            $output->writeln("<info>[+] Plantel: {$index}</info>");
+
             $detallesInstitucionIdPlantelUrl = "https://www.sirvoes.sep.gob.mx/sirvoes/mvc/consultas/detallesInstitucionIdPlantel";
 
             $detallesInstitucionIdPlantelResponse = $client->post($detallesInstitucionIdPlantelUrl, [
@@ -179,9 +158,6 @@ class CatalogoController extends Controller
                         $area = Area::create([
                             'nombre' => $datosPrograma->fkIdArea->nombreArea,
                             'descripcion' => $datosPrograma->fkIdArea->descripcionArea,
-                            'indice_superior' => $datosPrograma->fkIdArea->indiceSuperior,
-                            'indice_inferior' => $datosPrograma->fkIdArea->indiceInferior,
-                            'catalogo_id' => $datosPrograma->fkIdArea->idCatalogo,
                         ]);
                     }
                 }
@@ -294,9 +270,6 @@ class CatalogoController extends Controller
                             if (!$tipoRvoe) {
                                 $tipoRvoe = TipoRvoe::create([
                                     'nombre' => $datosPrograma->fkIdPlantel->fkIdInstitucion->fkIdTipoRvoe->nombreRvoe,
-                                    'indice_superior' => $datosPrograma->fkIdPlantel->fkIdInstitucion->fkIdTipoRvoe->indiceSuperior,
-                                    'indice_inferior' =>$datosPrograma->fkIdPlantel->fkIdInstitucion->fkIdTipoRvoe->indiceInferior,
-                                    'catalogo_id' => $datosPrograma->fkIdPlantel->fkIdInstitucion->fkIdTipoRvoe->idCatalogo,
                                 ]);
                             }
                         }
@@ -341,35 +314,34 @@ class CatalogoController extends Controller
                             'correo_electronico' => $datosPrograma->fkIdPlantel->correoElect,
                             'pagina_web' => $datosPrograma->fkIdPlantel->paginaWeb,
                             'institucion_id' => $institucion->id,
-                            'direccion_id' => $direccion->id, 
+                            'direccion_id' => isset($direccion) ? $direccion->id : null, 
                             'director_id' => isset($director) ? $director->id : null,
-                            'telefono_id' => $telefono->id, 
+                            'telefono_id' => isset($telefono) ? $telefono->id : null, 
                         ]);
                     }
                 }
-            }
+                $programa = Programa::where('nombre', $datosPrograma->nombrePrograma)
+                    ->where('llave', $datosPrograma->llave)
+                    ->where('llave', $datosPrograma->acuerdo)
+                    ->where('fecha_otorgamiento_rvoe', $datosPrograma->fecOtorRvoe)
+                    ->where('plantel_id', $plantel->id)
+                    ->first();
 
-            $programa = Programa::where('nombre', $datosPrograma->nombrePrograma)
-                ->where('llave', $datosPrograma->llave)
-                ->where('llave', $datosPrograma->acuerdo)
-                ->where('fecha_otorgamiento_rvoe', $datosPrograma->fecOtorRvoe)
-                ->where('plantel_id', $plantel->id)
-                ->first();
-
-            if (!$programa) {
-                $programa = Programa::create([
-                    'nombre' => $datosPrograma->nombrePrograma,
-                    'llave' => $datosPrograma->llave,
-                    'acuerdo' => $datosPrograma->acuerdo,
-                    'fecha_otorgamiento_rvoe' => $datosPrograma->fecOtorRvoe,
-                    'fecha_retiro_rvoe' => $institucion->fecRetiroRvoe,
-                    'plantel_id' => $plantel->id, 
-                    'nivel_id' => $nivel->id, 
-                    'area_id' => $area->id, 
-                    'modalidad_id' => $modalidad->id, 
-                    'estatus_id' => $estatus->id, 
-                    'motivo_retiro_id' => $motivoRetiro->id, 
-                ]);
+                if (!$programa) {
+                    $programa = Programa::create([
+                        'nombre' => $datosPrograma->nombrePrograma,
+                        'llave' => $datosPrograma->llave,
+                        'acuerdo' => $datosPrograma->acuerdo,
+                        'fecha_otorgamiento_rvoe' => $datosPrograma->fecOtorRvoe,
+                        'fecha_retiro_rvoe' => $institucion->fecRetiroRvoe,
+                        'plantel_id' => $plantel->id, 
+                        'nivel_id' => $nivel->id, 
+                        'area_id' => $area->id, 
+                        'modalidad_id' => $modalidad->id, 
+                        'estatus_id' => $estatus->id, 
+                        'motivo_retiro_id' => $motivoRetiro->id, 
+                    ]);
+                }
             }
         }
 

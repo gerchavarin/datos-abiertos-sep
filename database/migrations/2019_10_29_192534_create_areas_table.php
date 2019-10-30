@@ -17,9 +17,6 @@ class CreateAreasTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre');
             $table->string('descripcion');
-            $table->string('indice_superior')->nullable();
-            $table->string('indice_inferior')->nullable();
-            $table->string('catalogo_id')->nullable();
             $table->timestamps();
         });
     }
