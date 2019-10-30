@@ -109,8 +109,13 @@ class excelGenerate extends Command
         $worksheet->getCell('AC1')->setValue('FECHA DE RETIRO DEL RVOE');
         $worksheet->getCell('AD1')->setValue('MOTIVO DE RETIRO DEL RVOE');
 
+        $worksheet->getStyle('A')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('B')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('C')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('D')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('E')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('F')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('G')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('H')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('I')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('J')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
@@ -121,7 +126,20 @@ class excelGenerate extends Command
         $worksheet->getStyle('O')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('P')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
         $worksheet->getStyle('Q')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
-
+        $worksheet->getStyle('R')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('S')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('T')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('U')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('V')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('W')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('X')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('Y')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('Z')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('AA')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('AB')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('AC')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+        $worksheet->getStyle('AD')->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_TEXT);
+     
         // Rellena datos de los programas de estudio
 
         $programas = Programa::all();
