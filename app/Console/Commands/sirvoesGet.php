@@ -20,8 +20,10 @@ use App\TipoRvoe;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 
-class getSirvoes extends Command
+class sirvoesGet extends Command
 {
+
+    private $ch;
     /**
      * The name and signature of the console command.
      *
@@ -55,7 +57,8 @@ class getSirvoes extends Command
     {
         $output = new \Symfony\Component\Console\Output\ConsoleOutput();
 
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client(['verify'=>false]);
+        
 
         $consultaTotalesUrl = "https://www.sirvoes.sep.gob.mx/sirvoes/mvc/consultas/consultaTotales";
 
